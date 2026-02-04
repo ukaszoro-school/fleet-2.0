@@ -1,9 +1,12 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
+	"errors"
+	"fmt"
+	"io"
 	"net/http"
-	"strconv"
+	"os"
+	"strings"
 )
 
 type driver struct {
@@ -19,29 +22,56 @@ var drivers = []driver{
 	{ID: "3", Name: "Bojan", Surname: "Petrovic", Age: 45},
 }
 
-func main() {
-	router := gin.Default()
-	router.GET("/drivers", getDrivers)
-	router.GET("/drivers/:id", getDriverByID)
-
-	router.Run("localhost:8080")
-}
-
-func getDrivers(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, drivers)
-}
-
-func getDriverByID(c *gin.Context) {
-	id := c.Param("id")
-	if _, err := strconv.Atoi(id); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": " bad request"})
-		return
-	}
-	for _, a := range drivers {
-		if a.ID == id {
-			c.IndentedJSON(http.StatusOK, a)
+func FileServerFilter(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Disable dir listing
+		if strings.HasSuffix(r.URL.Path, "/") && r.URL.Path != "/" {
+			http.NotFound(w, r)
 			return
 		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
+func ServeFile(name string) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, name)
+	})
+}
+
+func setRoutes() {
+	fs := http.FileServer(http.Dir("../content/"))
+	http.Handle("GET /content/", http.StripPrefix("/content", FileServerFilter(fs)))
+
+	http.Handle("/", getRoot())
+	http.Handle("GET /hello", getHello())
+
+}
+
+func getRoot() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Printf("got / request\n")
+		io.WriteString(w, "This is my website!\n")
+	})
+}
+
+func getHello() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Printf("got /hello request\n")
+		io.WriteString(w, "Hello, HTTP!\n")
+	})
+}
+
+func main() {
+	setRoutes()
+
+	err := http.ListenAndServe(":8080", nil)
+
+	if errors.Is(err, http.ErrServerClosed) {
+		fmt.Printf("server closed\n")
+	} else if err != nil {
+		fmt.Printf("error starting server: %s\n", err)
+		os.Exit(1)
 	}
-	c.IndentedJSON(http.StatusNotFound, gin.H{"message": " not found"})
 }
