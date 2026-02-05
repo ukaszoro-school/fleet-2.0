@@ -7,6 +7,12 @@ import (
 	"net/http"
 	"os"
 	"strings"
+
+	"context"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
+	"log"
+	"time"
 )
 
 type driver struct {
@@ -66,7 +72,35 @@ func getHello() http.Handler {
 func main() {
 	setRoutes()
 
-	err := http.ListenAndServe(":8080", nil)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	uri := "mongodb://localhost:27017"
+
+	client, err := mongo.Connect(options.Client().ApplyURI(uri))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := client.Ping(ctx, nil); err != nil {
+		log.Fatal("Could not connect to MongoDB:", err)
+	}
+
+	fmt.Println("Connected to MongoDB!")
+
+	db := client.Database("testdb")
+	collection := db.Collection("users")
+
+	fmt.Println("Using database:", db.Name())
+	fmt.Println("Using collection:", collection.Name())
+
+	defer func() {
+		if err := client.Disconnect(ctx); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	err = http.ListenAndServe(":8080", nil)
 
 	if errors.Is(err, http.ErrServerClosed) {
 		fmt.Printf("server closed\n")
