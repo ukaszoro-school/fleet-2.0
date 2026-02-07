@@ -1,0 +1,17 @@
+{{ define "stop-edit" }}
+<form hx-put="/stops/{{ .ID }}"
+      hx-target="#stop-{{ .ID }}"
+      hx-swap="outerHTML"
+      class="stop-edit-form">
+
+  <input type="text" name="name" value="{{ .Name }}" required>
+
+  <button type="submit">Save</button>
+  <button hx-get="/stops/{{ .ID }}"
+          hx-target="#stop-{{ .ID }}"
+          hx-swap="outerHTML"
+          type="button">
+    Cancel
+  </button>
+</form>
+{{ end }}

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="referrer" content="always" />
+  <meta name="theme-color" content="#ADADAD" />
+
+  <title>Fleet Manager</title>
+<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+  <link rel="stylesheet" href="../../content/style.css">
+
+  <!-- HTMX -->
+
+</head>
+
+<body>
+  <div class="sidebar">
+    <div class="sidebar-top">
+      <a hx-get="/home"   hx-target=".content" hx-push-url="true">Home</a>
+      <a hx-get="/stops"  hx-target=".content" hx-push-url="true">Stops</a>
+      <a hx-get="/routes" hx-target=".content" hx-push-url="true">Routes</a>
+      <a hx-get="/lines"  hx-target=".content" hx-push-url="true">Lines</a>
+    </div>
+
+    <div class="sidebar-bottom">
+      <a hx-post="/logout" hx-target="body">Logout</a>
+    </div>
+  </div>
+
+  <div class="content"
+       hx-get="/home"
+       hx-trigger="load"
+       hx-target="this">
+    <!-- Initial content loads here -->
+  </div>
+
+</body>
+</html>

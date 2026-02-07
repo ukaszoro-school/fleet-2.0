@@ -1,0 +1,13 @@
+<h1>{{if .ID.IsZero}}New Driver{{else}}Edit Driver{{end}}</h1>
+
+<form hx-post="{{if .ID.IsZero}}/drivers/create{{else}}/drivers/update?id={{.ID.Hex}}{{end}}"
+      hx-target="#content">
+
+  <label>Name</label>
+  <input type="text" name="name" value="{{.Name}}" required>
+
+  <br><br>
+
+  <button type="submit">Save</button>
+  <button type="button" hx-get="/drivers" hx-target="#content">Cancel</button>
+</form>

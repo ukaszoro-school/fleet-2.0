@@ -1,0 +1,26 @@
+<div class="stops-page">
+
+  <h2>Stops</h2>
+
+  <!-- Add new stop -->
+  <form hx-post="/stops"
+        hx-target="#stops-list"
+        hx-swap="beforeend"
+        class="stop-form">
+
+    <input type="text" name="loaction" placeholder="Stop location" required>
+    <button type="submit">Add Stop</button>
+  </form>
+
+  <hr>
+
+  <!-- Stops list -->
+  <div id="stops-list">
+    {{ range . }}
+      {{ template "stop-row" . }}
+    {{ else }}
+      <p>No stops yet.</p>
+    {{ end }}
+  </div>
+
+</div>

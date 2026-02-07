@@ -1,0 +1,14 @@
+{{ define "stop-row" }}
+<div class="stop-row" id="stop-{{ .ID }}">
+
+  <span><strong>{{ .Location }}</strong></span>
+
+  <button hx-delete="/stops/{{ .ID }}"
+          hx-target="#stop-{{ .ID }}"
+          hx-swap="outerHTML"
+          hx-confirm="Delete this stop?">
+    Delete
+  </button>
+
+</div>
+{{ end }}
