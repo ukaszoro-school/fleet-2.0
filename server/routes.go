@@ -32,6 +32,7 @@ func setRoutes(s *Storage) {
 	http.Handle("/", getRoot())
 	http.Handle("GET /hello", getHello())
 	http.Handle("/stops", stopPageHandler(s, tmpl))
+	http.Handle("DELETE /stops/{id}", stopDeleteHandler(s))
 	http.Handle("/home", getHello())
 
 }

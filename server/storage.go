@@ -29,10 +29,10 @@ type User struct {
 	name string             `bson:"name"`
 }
 
-func storageNew(ctx context.Context, uri string) (*Storage, *mongo.Client) {
+func storageNew(ctx *context.Context, uri string) (*Storage, *mongo.Client) {
 
 	s := Storage{}
-	s.ctx = ctx
+	s.ctx = *ctx
 	client, err := mongo.Connect(options.Client().ApplyURI(uri))
 	if err != nil {
 		log.Fatal(err)

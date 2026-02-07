@@ -13,14 +13,12 @@ import (
 
 func main() {
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
 	defer cancel()
 
 	uri := "mongodb://localhost:27017"
 
-	s, client := storageNew(ctx, uri)
-
-	setRoutes(s)
+	s, client := storageNew(&ctx, uri)
 
 	fmt.Println("Using collection:", s.userCollection.Name())
 	fmt.Println("Using collection:", s.routeCollection.Name())
@@ -31,6 +29,7 @@ func main() {
 			log.Fatal(err)
 		}
 	}()
+	setRoutes(s)
 
 	err := http.ListenAndServe(":8080", nil)
 

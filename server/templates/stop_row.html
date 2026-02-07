@@ -1,14 +1,17 @@
 {{ define "stop-row" }}
-<div class="stop-row" id="stop-{{ .ID }}">
+<div class="stop-row" id="stop-{{ .ID.Hex }}" style="display:flex; align-items:center; gap:0.5rem;">
+  <span class="stop-location" style="width:200px; display:inline-block;">
+    {{ .Location }}
+  </span>
 
-  <span><strong>{{ .Location }}</strong></span>
 
-  <button hx-delete="/stops/{{ .ID }}"
-          hx-target="#stop-{{ .ID }}"
-          hx-swap="outerHTML"
-          hx-confirm="Delete this stop?">
-    Delete
-  </button>
+<form
+  hx-delete="/stops/{{ .ID.Hex }}"
+  hx-target="closest .stop-row"
+  hx-swap="outerHTML"
+  style="display:inline;">
+  <button>Delete</button>
+</form>
 
 </div>
 {{ end }}
