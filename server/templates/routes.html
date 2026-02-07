@@ -2,7 +2,7 @@
 
 <h2>Create Route</h2>
 
-<form hx-post="/routes" hx-target="#result" hx-swap="innerHTML">
+<form hx-post="/routes" hx-target="#routes-list" hx-swap="beforeend">
 
     <div>
         <label>Route Name</label><br>
@@ -34,4 +34,12 @@
     <button type="submit">Create Route</button>
 </form>
 <div id="result"></div>
+
+<h2>Routes List</h2>
+
+<div id="routes-list">
+    {{ range .Routes }}
+        {{ template "route-read-row" . }}
+    {{ end }}
+</div>
 </div>

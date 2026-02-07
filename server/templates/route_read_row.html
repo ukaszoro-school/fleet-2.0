@@ -1,0 +1,16 @@
+{{ define "route-read-row"  }}
+<div class="route-read-row" id="route-{{ .ID.Hex }}" style="display:flex; align-items:center; gap:0.5rem;">
+          <span class="route-name" style="width:200px; display:inline-block;">
+        {{ .Name }}
+          </span>
+
+<form
+  hx-delete="/routes/{{ .ID.Hex }}"
+  hx-target="closest .route-read-row"
+  hx-swap="outerHTML"
+  style="display:inline;">
+  <button>Delete</button>
+</form>
+
+</div>
+{{ end }}
