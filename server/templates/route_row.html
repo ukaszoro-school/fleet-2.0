@@ -1,0 +1,14 @@
+<div class="row">
+    <select name="stop_id[]">
+            
+        <option value="">Select stop</option>
+        {{ range .Stops }}
+            <option value="{{ .ID.Hex }}">{{ .Location }}</option>
+        {{ end }}
+    </select>
+
+    <input type="time" name="time[]" hx-get="/routes/new-row"
+            hx-trigger="change"
+            hx-target="#stop-times"
+            hx-swap="beforeend"></input>
+</div>

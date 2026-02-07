@@ -1,0 +1,37 @@
+<div class="routes-page">
+
+<h2>Create Route</h2>
+
+<form hx-post="/routes" hx-target="#result" hx-swap="innerHTML">
+
+    <div>
+        <label>Route Name</label><br>
+        <input type="text" name="route_name" required>
+    </div>
+
+    <h3>Stops & Times</h3>
+
+    <div id="stop-times">
+        <!-- First row -->
+        <div class="row">
+            <select name="stop_id[]"
+                    required>
+                <option value="">Select stop</option>
+                {{ range .Stops }}
+                    <option value="{{ .ID.Hex }}">{{ .Location }}</option>
+                {{ end }}
+            </select>
+
+            <input type="time" name="time[]"
+                    hx-get="/routes/new-row"
+                    hx-trigger="change"
+                    hx-target="#stop-times"
+                    hx-swap="beforeend"
+                    required></input>
+        </div>
+    </div>
+
+    <button type="submit">Create Route</button>
+</form>
+<div id="result"></div>
+</div>
