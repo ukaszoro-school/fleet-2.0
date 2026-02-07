@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"strings"
+	"text/template"
 )
 
 func FileServerFilter(next http.Handler) http.Handler {
@@ -23,11 +24,14 @@ func ServeFile(name string) http.Handler {
 	})
 }
 
-func setRoutes() {
+func setRoutes(s *Storage) {
+	tmpl := template.Must(template.ParseGlob("templates/*.html"))
 	fs := http.FileServer(http.Dir("../content/"))
 	http.Handle("GET /content/", http.StripPrefix("/content", FileServerFilter(fs)))
 
 	http.Handle("/", getRoot())
 	http.Handle("GET /hello", getHello())
+	http.Handle("/stops", stopPageHandler(s, tmpl))
+	http.Handle("/home", getHello())
 
 }

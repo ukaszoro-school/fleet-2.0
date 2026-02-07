@@ -20,7 +20,7 @@ func main() {
 
 	s, client := storageNew(ctx, uri)
 
-	setRoutes()
+	setRoutes(s)
 
 	fmt.Println("Using collection:", s.userCollection.Name())
 	fmt.Println("Using collection:", s.routeCollection.Name())
