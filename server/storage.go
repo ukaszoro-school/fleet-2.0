@@ -29,6 +29,12 @@ type User struct {
 	name string             `bson:"name"`
 }
 
+type Route struct {
+	ID    primitive.ObjectID `bson:"_id,omitempty"`
+	Name  string             `bson:"name"`
+	Times map[string]string  `bson:"times"`
+}
+
 func storageNew(ctx *context.Context, uri string) (*Storage, *mongo.Client) {
 
 	s := Storage{}
@@ -167,4 +173,12 @@ func (s *Storage) deleteUserByID(id primitive.ObjectID) error {
 
 	_, err := s.userCollection.DeleteOne(s.ctx, filter)
 	return err
+}
+
+func (s *Storage) createRoute(route *Route) (*mongo.InsertOneResult, error) {
+	result, err := s.routeCollection.InsertOne(s.ctx, route)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }

@@ -78,3 +78,60 @@ func stopDeleteHandler(s *Storage) http.HandlerFunc {
 		s.deleteStopByID(id)
 	}
 }
+
+func routePageHandler(s *Storage, tmpl *template.Template) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			if isHTMX(r) {
+
+				var stop []Stop
+
+				stop, _ = s.getAllStops()
+
+				tmpl.ExecuteTemplate(w, "routes.html", struct {
+					Stops []Stop
+				}{Stops: stop})
+
+			} else {
+
+				tmpl := template.Must(template.ParseFiles("templates/index.html"))
+				tmpl.Execute(w, nil)
+			}
+		case http.MethodPost:
+			routeName := r.FormValue("route_name")
+			stops := r.Form["stop_id[]"]
+			times := r.Form["time[]"]
+
+			timesMap := make(map[string]string)
+
+			for i := range stops {
+				if stops[i] == "" {
+					continue
+				}
+				timesMap[stops[i]] = times[i]
+			}
+
+			route := Route{
+				ID:    primitive.NewObjectID(),
+				Name:  routeName,
+				Times: timesMap,
+			}
+			fmt.Print(route)
+			s.createRoute(&route)
+
+		}
+	}
+}
+
+func routeRowPageHandler(s *Storage, tmpl *template.Template) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		var stop []Stop
+
+		stop, _ = s.getAllStops()
+		tmpl.ExecuteTemplate(w, "route_row.html", struct {
+			Stops []Stop
+		}{Stops: stop})
+	}
+}
