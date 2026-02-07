@@ -85,13 +85,16 @@ func routePageHandler(s *Storage, tmpl *template.Template) http.HandlerFunc {
 		case http.MethodGet:
 			if isHTMX(r) {
 
-				var stop []Stop
+				var stops []Stop
+				var routes []Route
 
-				stop, _ = s.getAllStops()
+				stops, _ = s.getAllStops()
+				routes, _ = s.getAllRoutes()
 
 				tmpl.ExecuteTemplate(w, "routes.html", struct {
-					Stops []Stop
-				}{Stops: stop})
+					Stops  []Stop
+					Routes []Route
+				}{Stops: stops, Routes: routes})
 
 			} else {
 
@@ -118,7 +121,14 @@ func routePageHandler(s *Storage, tmpl *template.Template) http.HandlerFunc {
 				Times: timesMap,
 			}
 			fmt.Print(route)
-			s.createRoute(&route)
+			_, err := s.createRoute(&route)
+			if err != nil {
+				fmt.Print(err)
+			}
+			if err := tmpl.ExecuteTemplate(w, "route-read-row", route); err != nil {
+				http.Error(w, "Template error", http.StatusInternalServerError)
+				return
+			}
 
 		}
 	}
@@ -130,8 +140,21 @@ func routeRowPageHandler(s *Storage, tmpl *template.Template) http.HandlerFunc {
 		var stop []Stop
 
 		stop, _ = s.getAllStops()
-		tmpl.ExecuteTemplate(w, "route_row.html", struct {
+		tmpl.ExecuteTemplate(w, "route_form_row.html", struct {
 			Stops []Stop
 		}{Stops: stop})
+	}
+}
+
+func routeDeleteHandler(s *Storage) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		idstr := r.PathValue("id")
+		fmt.Print(r.URL)
+		id, err := primitive.ObjectIDFromHex(idstr)
+		if err != nil {
+			fmt.Print("Failed to delete object: ", err)
+
+		}
+		s.deleteRouteByID(id)
 	}
 }

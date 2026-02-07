@@ -182,3 +182,34 @@ func (s *Storage) createRoute(route *Route) (*mongo.InsertOneResult, error) {
 	}
 	return result, nil
 }
+
+func (s *Storage) getAllRoutes() ([]Route, error) {
+	var routes []Route
+
+	cursor, err := s.routeCollection.Find(s.ctx, bson.M{})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(s.ctx)
+
+	for cursor.Next(s.ctx) {
+		var route Route
+		if err := cursor.Decode(&route); err != nil {
+			return nil, err
+		}
+		routes = append(routes, route)
+	}
+
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return routes, nil
+}
+
+func (s *Storage) deleteRouteByID(id primitive.ObjectID) error {
+	filter := bson.M{"_id": id}
+
+	_, err := s.routeCollection.DeleteOne(s.ctx, filter)
+	return err
+}
