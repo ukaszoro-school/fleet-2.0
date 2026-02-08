@@ -33,6 +33,7 @@ func setRoutes(s *Storage) {
 	http.Handle("GET /hello", getHello())
 	http.Handle("/stops", stopPageHandler(s, tmpl))
 	http.Handle("/routes", routePageHandler(s, tmpl))
+	http.Handle("/lines", linePageHandler(s, tmpl))
 	http.Handle("GET /routes/new-row", routeRowPageHandler(s, tmpl))
 	http.Handle("DELETE /stops/{id}", stopDeleteHandler(s))
 	http.Handle("DELETE /routes/{id}", routeDeleteHandler(s))

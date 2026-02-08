@@ -23,7 +23,7 @@ func getRoot() http.Handler {
 func getHello() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-		io.WriteString(w, "Hello, HTTP!\n")
+		io.WriteString(w, "Welcome user to fleet manager home!\n")
 	})
 }
 
@@ -156,5 +156,37 @@ func routeDeleteHandler(s *Storage) http.HandlerFunc {
 
 		}
 		s.deleteRouteByID(id)
+	}
+}
+
+func linePageHandler(s *Storage, tmpl *template.Template) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			if isHTMX(r) {
+
+				var stops []Stop
+				var routes []Route
+
+				stops, _ = s.getAllStops()
+				routes, _ = s.getAllRoutes()
+
+				stopMap := make(map[string]Stop)
+				for _, s := range stops {
+					stopMap[s.ID.Hex()] = s
+				}
+
+				tmpl.ExecuteTemplate(w, "lines.html", struct {
+					StopMap map[string]Stop
+					Routes  []Route
+				}{StopMap: stopMap, Routes: routes})
+
+			} else {
+
+				tmpl := template.Must(template.ParseFiles("templates/index.html"))
+				tmpl.Execute(w, nil)
+			}
+
+		}
 	}
 }
