@@ -1,10 +1,10 @@
-# Fleet manager (name WIP)
-A remake of a previous project under repo "WDPIA".
+# Fleet manager
+A web app for managing and visualising bus routes.
 
-## Technology (WIP)
-- Backend: Golang with Gin Web Framework
-- Frontend: React
+## Technology
+- Backend: Golang
+- Frontend: htmx
 - Database: MongoDB
 
-## Figma
-![alt text](https://github.com/ukaszoro-school/fleet-2.0/blob/main/figma.png)
+## ERD
+![alt text](https://github.com/ukaszoro-school/fleet-2.0/blob/main/db.png)
