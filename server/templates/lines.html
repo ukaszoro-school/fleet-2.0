@@ -1,0 +1,14 @@
+<div class="lines-list">
+  <h1>Lines</h1>
+
+  {{ range .Routes }}
+    <h2>{{ .Name  }}</h2>
+    <div>
+      {{ range $key, $value := .Times }}
+        {{ with index $.StopMap ($key) }}
+          <p> Time: {{ $value }} - Stop:  {{ .Location }}</p>
+        {{ end }}
+      {{ end }}
+    </div>
+  {{ end }}
+</div>
