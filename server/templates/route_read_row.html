@@ -4,6 +4,16 @@
         {{ .Name }}
           </span>
 
+
+<form>
+  <!-- hx-get="/stops/{{ .ID.Hex }}" -->
+  <!-- hx-target="closest .stop-row" -->
+  <!-- hx-swap="outerHTML" -->
+  <!-- style="display:inline;"> -->
+  <button>Edit</button> <!---Not operational yet -->
+</form>
+
+
 <form
   hx-delete="/routes/{{ .ID.Hex }}"
   hx-target="closest .route-read-row"
