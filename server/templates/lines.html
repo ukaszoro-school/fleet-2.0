@@ -6,7 +6,7 @@
     <div>
       {{ range $key, $value := .Times }}
         {{ with index $.StopMap ($key) }}
-          <p> Time: {{ $value }} - Stop:  {{ .Location }}</p>
+          <p> Stop:  {{ .Location }} - Time: {{ $value }} </p>
         {{ end }}
       {{ end }}
     </div>
